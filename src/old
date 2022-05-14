@@ -1,0 +1,40 @@
+type ttt = Join<Split<'a.b.c', '.'>, '.../...'>;
+
+const testData = {
+  p1: 'string',
+  p2: 2,
+  p3: {
+    p4: true,
+    p5: {
+      p6: 'monkey',
+    },
+  },
+};
+console.clear();
+console.log(testData);
+const testDataCopy = { ...testData };
+
+const setProp = deferP0(setDeepProp);
+
+console.log(getDeepProp(testData, 'p3.p4'));
+
+const output = pipeInto(
+  testData,
+  setProp('p1', 'anotherString'),
+  setProp('p2', 999)
+);
+
+console.log(output);
+console.log(testData);
+console.log(deepEqual(testData, testDataCopy));
+
+const [draft, materialize] = edit(testData);
+draft.p1 = 'yesnow';
+draft.p3.p4 = false;
+draft.p3.p5 = {
+  p6: 'reassigned',
+};
+draft.p3.p5.p6 = 'reassigned-again';
+const newData2 = materialize();
+console.log(testData);
+console.log(newData2);
