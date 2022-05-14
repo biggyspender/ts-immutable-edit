@@ -1,3 +1,3 @@
 # deepprops
 
-[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/deepprops)
+[Edit on StackBlitz ⚡️](https://stackblitz.com/github/biggyspender/ts-immutable-edit)
