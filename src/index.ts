@@ -1,7 +1,7 @@
 import { edit } from './immutable/edit';
 import util from 'util';
 import { pipeInto } from 'ts-functional-pipe';
-import { join, toArray, range, map, forEach } from 'ts-iterable-functions';
+import { range, map, forEach } from 'ts-iterable-functions';
 import { produce } from 'immer';
 import { performance } from 'perf_hooks';
 
@@ -30,35 +30,35 @@ try {
       nn.n = 999;
     }
     arr.push(...[9, 8, 7].map((v) => ({ n: v })));
-    arr.copyWithin(0, 2, 4);
+    arr.copyWithin(0, 1, 3);
     arr.reverse();
     //console.log(Object.entries(draft));
   };
-  pipeInto(
-    range(0, 10),
-    map(() => edit(src1, editFunc)),
-    forEach(() => {})
-  );
-  pipeInto(
-    range(0, 10),
-    map(() => produce(src1, editFunc)),
-    forEach(() => {})
-  );
+  for (let i = 0; i < 10; ++i) {
+    edit(src1, editFunc);
+    produce(src1, editFunc);
+  }
 
   const numRuns = 10000;
   const run1Start = performance.now();
-  pipeInto(
-    range(0, numRuns),
-    map(() => edit(src1, editFunc)),
-    forEach(() => {})
-  );
+  for (let i = 0; i < numRuns; ++i) {
+    edit(src1, editFunc);
+  }
+  // pipeInto(
+  //   range(0, numRuns),
+  //   map(() => edit(src1, editFunc)),
+  //   forEach(() => {})
+  // );
   const run1end = performance.now();
+  for (let i = 0; i < numRuns; ++i) {
+    produce(src1, editFunc);
+  }
 
-  pipeInto(
-    range(0, numRuns),
-    map(() => produce(src1, editFunc)),
-    forEach(() => {})
-  );
+  // pipeInto(
+  //   range(0, numRuns),
+  //   map(() => produce(src1, editFunc)),
+  //   forEach(() => {})
+  // );
   const run2end = performance.now();
 
   console.log(run1end - run1Start, run2end - run1end);
@@ -84,5 +84,5 @@ try {
   // console.log(res.b === src1.b);
   // console.log(res === src1);
 } catch (e: any) {
-  console.log(e.message);
+  console.log(e.message, e.stack);
 }

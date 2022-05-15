@@ -1,13 +1,13 @@
-import { MATERIALIZE_PROXY } from './symbol/MATERIALIZE_PROXY';
-import { materializeProxy } from './materializeProxy';
-import { isMaterializable } from '../src/types/Materializable/guard/isMaterializable';
-import { makeCopyRef } from './makeCopyRef';
-import { CopyRef } from '../src/types/CopyRef';
+import { MATERIALIZE_PROXY } from '../symbol/MATERIALIZE_PROXY';
+import { materializeProxy } from './src/materializeProxy';
+import { isMaterializable } from '../types/Materializable/guard/isMaterializable';
+import { makeCopyRef } from './src/makeCopyRef';
+import { CopyRef } from './src/types/CopyRef';
 
 export class ImmutableProxyHandler<T extends object>
   implements ProxyHandler<T>
 {
-  copyRef: CopyRef<T> | undefined;
+  copyRef?: CopyRef<T>;
   changed = false;
   materializedRef:
     | {
@@ -29,6 +29,7 @@ export class ImmutableProxyHandler<T extends object>
           }
           const val = materializeProxy(target, this.copyRef, this.changed);
           this.materializedRef = val;
+          //this.revoke?.();
           return val;
         };
       }
