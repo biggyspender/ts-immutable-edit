@@ -1,11 +1,12 @@
-import { MATERIALIZE_PROXY } from "./symbol/MATERIALIZE_PROXY";
-import { isMaterializable } from "./types/Materializable/guard/isMaterializable";
-import { CopyRef } from "./types/CopyRef";
+import { MATERIALIZE_PROXY } from './symbol/MATERIALIZE_PROXY';
+import { isMaterializable } from './types/Materializable/guard/isMaterializable';
+import { CopyRef } from './types/CopyRef';
 
 export function materializeObject<T extends object>(
   originalTarget: T,
   copyRef: CopyRef<T>,
-  changed: boolean) {
+  changed: boolean
+) {
   let descendentsOrSelfChanged = changed;
   const entries = Object.entries(copyRef.ref).map(([k, v]) => {
     if (isMaterializable(v)) {

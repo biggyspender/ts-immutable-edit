@@ -20,7 +20,7 @@ export class ImmutableProxyHandler<T extends object>
 
   constructor(originalTarget: T, createProxy: <T extends object>(v: T) => T) {
     this.originalTarget = originalTarget;
-    this.createProxy=createProxy;
+    this.createProxy = createProxy;
   }
   get(target: T, propKey: PropertyKey, receiver: any) {
     switch (propKey) {

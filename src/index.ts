@@ -54,7 +54,7 @@ try {
   );
   const run1end = performance.now();
 
-   pipeInto(
+  pipeInto(
     range(0, numRuns),
     map(() => produce(src1, editFunc)),
     forEach(() => {})
