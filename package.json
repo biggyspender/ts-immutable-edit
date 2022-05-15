@@ -6,6 +6,7 @@
     "start": "nodemon src/index.ts"
   },
   "dependencies": {
+    "immer": "^9.0.14",
     "nodemon": "^2.0.16",
     "ts-deep-equal": "^1.1.5",
     "ts-functional-pipe": "^3.1.2",
