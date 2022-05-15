@@ -12,14 +12,12 @@ export class ImmutableProxyHandler<T extends object>
   materializedRef:
     | {
         value: T;
-        isCopy: boolean;
+        changed: boolean;
       }
     | undefined;
-  originalTarget: T;
   createProxy: <T extends object>(v: T) => T;
 
-  constructor(originalTarget: T, createProxy: <T extends object>(v: T) => T) {
-    this.originalTarget = originalTarget;
+  constructor(createProxy: <T extends object>(v: T) => T) {
     this.createProxy = createProxy;
   }
   get(target: T, propKey: PropertyKey, receiver: any) {
@@ -29,18 +27,14 @@ export class ImmutableProxyHandler<T extends object>
           if (this.materializedRef) {
             return this.materializedRef;
           }
-          const val = materializeProxy(
-            this.originalTarget,
-            this.copyRef,
-            this.changed
-          );
+          const val = materializeProxy(target, this.copyRef, this.changed);
           this.materializedRef = val;
           return val;
         };
       }
       default: {
         const returnValue = Reflect.get(
-          this.copyRef ? this.copyRef.ref : this.originalTarget,
+          this.copyRef ? this.copyRef.ref : target,
           propKey
         );
 
@@ -52,7 +46,7 @@ export class ImmutableProxyHandler<T extends object>
         }
         const proxyVal = this.createProxy(returnValue);
         if (!this.copyRef) {
-          this.copyRef = makeCopyRef(this.originalTarget);
+          this.copyRef = makeCopyRef(target);
         }
         Reflect.set(this.copyRef.ref, propKey, proxyVal);
         return proxyVal;
@@ -65,7 +59,7 @@ export class ImmutableProxyHandler<T extends object>
     }
     this.changed = true;
     if (!this.copyRef) {
-      this.copyRef = makeCopyRef(this.originalTarget);
+      this.copyRef = makeCopyRef(target);
     }
     const ret = Reflect.set(this.copyRef.ref, propKey, value, this.copyRef.ref);
     return ret;
@@ -75,7 +69,7 @@ export class ImmutableProxyHandler<T extends object>
       throw Error('object proxy expired');
     }
     if (!this.copyRef) {
-      this.copyRef = makeCopyRef(this.originalTarget);
+      this.copyRef = makeCopyRef(target);
     }
     return Reflect.deleteProperty(this.copyRef.ref, propKey);
   }

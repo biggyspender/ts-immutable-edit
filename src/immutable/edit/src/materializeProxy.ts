@@ -1,16 +1,17 @@
 import { CopyRef } from './types/CopyRef';
 import { materializeArray } from './materializeArray';
 import { materializeObject } from './materializeObject';
+import { MaterializedValue } from './types/MaterializedValue';
 
 export function materializeProxy<T extends object>(
   originalTarget: T,
   copyRef: CopyRef<T> | undefined,
   changed: boolean
-): { value: T; isCopy: boolean } {
+): MaterializedValue<T> {
   if (!copyRef) {
-    return { value: originalTarget, isCopy: false };
+    return { value: originalTarget, changed: false };
   }
-  const { value: materialized, isCopy: descendentsChanged } =
+  const { value: materialized, changed: descendentsChanged } =
     copyRef.type === 'object'
       ? materializeObject(originalTarget, copyRef, changed)
       : materializeArray(originalTarget, copyRef, changed);
@@ -18,6 +19,6 @@ export function materializeProxy<T extends object>(
 
   return {
     value: descendentOrSelfChanged ? materialized : originalTarget,
-    isCopy: descendentOrSelfChanged,
+    changed: descendentOrSelfChanged,
   };
 }
