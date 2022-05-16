@@ -1,13 +1,12 @@
 import { edit } from './immutable/edit';
 import util from 'util';
-import { pipeInto } from 'ts-functional-pipe';
-import { range, map, forEach } from 'ts-iterable-functions';
 import { produce } from 'immer';
-import { performance } from 'perf_hooks';
 import { deepFreeze } from './immutable/deepFreeze';
 import { Mutable } from './immutable/types/Mutable';
+import { measureRunTime } from './measurement/measureRunTime';
+import { clearConsoleScrollback } from './util/clearConsoleScrollback';
 
-process.stdout.write('\u001b[3J\u001b[1J');
+clearConsoleScrollback();
 console.clear();
 
 try {
@@ -34,57 +33,34 @@ try {
     arr.push(...[9, 8, 7].map((v) => ({ n: v })));
     arr.copyWithin(0, 1, 3);
     arr.reverse();
+    arr.length = 5;
   };
-  for (let i = 0; i < 10; ++i) {
-    edit(srcData, editFunc);
-    produce(srcData, editFunc);
-  }
+  const numRuns = 50000;
+  const editRunMeasurements = {
+    name: 'edit',
+    ...measureRunTime(numRuns, () => {
+      edit(srcData, editFunc);
+    }),
+  };
+  const produceRunMeasurements = {
+    name: 'produce',
+    ...measureRunTime(numRuns, () => {
+      produce(srcData, editFunc);
+    }),
+  };
 
-  const numRuns = 10000;
-  const run1Start = performance.now();
-  for (let i = 0; i < numRuns; ++i) {
-    edit(srcData, editFunc);
-  }
-  // pipeInto(
-  //   range(0, numRuns),
-  //   map(() => edit(src1, editFunc)),
-  //   forEach(() => {})
-  // );
-  const run1end = performance.now();
-  for (let i = 0; i < numRuns; ++i) {
-    produce(srcData, editFunc);
-  }
-
-  // pipeInto(
-  //   range(0, numRuns),
-  //   map(() => produce(src1, editFunc)),
-  //   forEach(() => {})
-  // );
-  const run2end = performance.now();
-
-  console.log(run1end - run1Start, run2end - run1end);
+  console.log(editRunMeasurements, produceRunMeasurements);
+  console.log(
+    `${(produceRunMeasurements.runTime / editRunMeasurements.runTime).toFixed(
+      2
+    )} times faster`
+  );
 
   const res1 = edit(srcData, editFunc);
-  console.log(Object.isFrozen(res1));
   console.log(util.inspect(res1, undefined, 5, true));
   const res2 = produce(srcData, editFunc);
   console.log(util.inspect(res2, undefined, 5, true));
-  // console.log(util.inspect(src1, undefined, 5, true));
-  // console.log(src1.b.animal === res.b.animal);
-  // console.log(
-  //   pipeInto(
-  //     src1.arr,
-  //     join(
-  //       res.arr,
-  //       (a) => a,
-  //       (b) => b,
-  //       (a) => a
-  //     ),
-  //     toArray()
-  //   )
-  // );
-  // console.log(res.b === src1.b);
-  // console.log(res === src1);
+  console.log(res1.arr[5] === res2.arr[5]);
 } catch (e: any) {
   console.log(e.message, e.stack);
 }
