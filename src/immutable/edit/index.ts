@@ -1,6 +1,6 @@
 import { Immutable } from 'immer';
 import { deepFreeze } from '../deepFreeze';
-import { Mutable } from '../Immutable';
+import { Mutable } from '../types/Mutable';
 import { createProxy } from './src/createProxy';
 import { materialize } from './src/materialize';
 
@@ -29,10 +29,10 @@ export function edit<
   const opts = { ...defaultOptions, ...options };
   const { draft, revoke } = createProxy(v);
   editor(draft as Mutable<T>);
-  const r = materialize(draft);
+  const { value } = materialize(draft);
   revoke();
   if (opts.freeze) {
-    return deepFreeze(r) as EditReturnType<O, T>;
+    return deepFreeze(value) as EditReturnType<O, T>;
   }
-  return r as EditReturnType<O, T>;
+  return value as EditReturnType<O, T>;
 }

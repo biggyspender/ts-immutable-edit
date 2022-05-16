@@ -5,7 +5,7 @@ import { range, map, forEach } from 'ts-iterable-functions';
 import { produce } from 'immer';
 import { performance } from 'perf_hooks';
 import { deepFreeze } from './immutable/deepFreeze';
-import { Mutable } from './immutable/Immutable';
+import { Mutable } from './immutable/types/Mutable';
 
 process.stdout.write('\u001b[3J\u001b[1J');
 console.clear();
@@ -34,7 +34,6 @@ try {
     arr.push(...[9, 8, 7].map((v) => ({ n: v })));
     arr.copyWithin(0, 1, 3);
     arr.reverse();
-    //console.log(Object.entries(draft));
   };
   for (let i = 0; i < 10; ++i) {
     edit(srcData, editFunc);

@@ -2,14 +2,12 @@ import { MATERIALIZE_PROXY } from '../symbol/MATERIALIZE_PROXY';
 import { materializeProxy } from './src/materializeProxy';
 import { isMaterializable } from '../types/Materializable/guard/isMaterializable';
 import { makeCopyRef } from './src/makeCopyRef';
-import { CopyRef } from './src/types/CopyRef';
 import { Revokable } from '../createProxy';
 import { Proxied } from '../types/Proxied';
+import { Ref } from './src/types/Ref';
 
-export class ImmutableProxyHandler<T extends object>
-  implements ProxyHandler<T>
-{
-  copyRef?: CopyRef<T>;
+export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
+  copyRef?: Ref<T>;
   changed = false;
   materializedRef:
     | {
@@ -31,22 +29,22 @@ export class ImmutableProxyHandler<T extends object>
   revoke() {
     this.revocations.forEach((r) => r());
   }
+  materialize() {
+    if (this.materializedRef) {
+      return this.materializedRef;
+    }
+    const val = materializeProxy(
+      this.originalTarget,
+      this.copyRef,
+      this.changed
+    );
+    this.materializedRef = val;
+    return val;
+  }
   get(target: T, propKey: PropertyKey, receiver: any) {
     switch (propKey) {
       case MATERIALIZE_PROXY: {
-        return () => {
-          if (this.materializedRef) {
-            return this.materializedRef;
-          }
-          const val = materializeProxy(
-            this.originalTarget,
-            this.copyRef,
-            this.changed
-          );
-          this.materializedRef = val;
-          //this.revoke?.();
-          return val;
-        };
+        return this.materialize.bind(this);
       }
       default: {
         const returnValue = Reflect.get(

@@ -1,5 +1,5 @@
 import { MATERIALIZE_PROXY } from '../../symbol/MATERIALIZE_PROXY';
-import { MaterializedValue } from '../../ImmutableProxyHandler/src/types/MaterializedValue';
+import { MaterializedValue } from '../../EditProxyHandler/src/types/MaterializedValue';
 
 export interface Materializable<T extends object> {
   [MATERIALIZE_PROXY]: () => MaterializedValue<T>;
