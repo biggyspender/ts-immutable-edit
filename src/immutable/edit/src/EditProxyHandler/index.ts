@@ -27,7 +27,9 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
     this.createProxy = createProxy;
   }
   revoke() {
-    this.revocations.forEach((r) => r());
+    for (const r of this.revocations) {
+      r();
+    }
   }
   materialize() {
     if (this.materializedRef) {
