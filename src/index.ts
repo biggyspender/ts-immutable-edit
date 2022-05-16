@@ -4,18 +4,20 @@ import { pipeInto } from 'ts-functional-pipe';
 import { range, map, forEach } from 'ts-iterable-functions';
 import { produce } from 'immer';
 import { performance } from 'perf_hooks';
+import { deepFreeze } from './immutable/deepFreeze';
+import { Mutable } from './immutable/Immutable';
 
 process.stdout.write('\u001b[3J\u001b[1J');
 console.clear();
 
 try {
-  const src1 = {
+  const srcData = deepFreeze({
     a: { a: 1 } as { a: number } | undefined,
     b: { animal: 'monkey' },
     arr: [{ n: 1 }, { n: 2 }, { n: 3 }],
-  };
+  });
 
-  const editFunc = (draft: typeof src1) => {
+  const editFunc = (draft: Mutable<typeof srcData>) => {
     delete draft.a;
     draft.b.animal = 'giraffe';
     const arr = draft.arr;
@@ -35,14 +37,14 @@ try {
     //console.log(Object.entries(draft));
   };
   for (let i = 0; i < 10; ++i) {
-    edit(src1, editFunc);
-    produce(src1, editFunc);
+    edit(srcData, editFunc);
+    produce(srcData, editFunc);
   }
 
   const numRuns = 10000;
   const run1Start = performance.now();
   for (let i = 0; i < numRuns; ++i) {
-    edit(src1, editFunc);
+    edit(srcData, editFunc);
   }
   // pipeInto(
   //   range(0, numRuns),
@@ -51,7 +53,7 @@ try {
   // );
   const run1end = performance.now();
   for (let i = 0; i < numRuns; ++i) {
-    produce(src1, editFunc);
+    produce(srcData, editFunc);
   }
 
   // pipeInto(
@@ -63,9 +65,10 @@ try {
 
   console.log(run1end - run1Start, run2end - run1end);
 
-  const res1 = edit(src1, editFunc);
+  const res1 = edit(srcData, editFunc);
+  console.log(Object.isFrozen(res1));
   console.log(util.inspect(res1, undefined, 5, true));
-  const res2 = produce(src1, editFunc);
+  const res2 = produce(srcData, editFunc);
   console.log(util.inspect(res2, undefined, 5, true));
   // console.log(util.inspect(src1, undefined, 5, true));
   // console.log(src1.b.animal === res.b.animal);

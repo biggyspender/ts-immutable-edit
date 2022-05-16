@@ -3,6 +3,8 @@ import { materializeProxy } from './src/materializeProxy';
 import { isMaterializable } from '../types/Materializable/guard/isMaterializable';
 import { makeCopyRef } from './src/makeCopyRef';
 import { CopyRef } from './src/types/CopyRef';
+import { Revokable } from '../createProxy';
+import { Proxied } from '../types/Proxied';
 
 export class ImmutableProxyHandler<T extends object>
   implements ProxyHandler<T>
@@ -15,10 +17,19 @@ export class ImmutableProxyHandler<T extends object>
         changed: boolean;
       }
     | undefined;
-  createProxy: <T extends object>(v: T) => T;
+  createProxy: <T extends object>(v: T) => Revokable<Proxied<T>>;
+  revocations: (() => void)[] = [];
+  originalTarget: T;
 
-  constructor(createProxy: <T extends object>(v: T) => T) {
+  constructor(
+    originalTarget: T,
+    createProxy: <T extends object>(v: T) => Revokable<Proxied<T>>
+  ) {
+    this.originalTarget = originalTarget;
     this.createProxy = createProxy;
+  }
+  revoke() {
+    this.revocations.forEach((r) => r());
   }
   get(target: T, propKey: PropertyKey, receiver: any) {
     switch (propKey) {
@@ -27,7 +38,11 @@ export class ImmutableProxyHandler<T extends object>
           if (this.materializedRef) {
             return this.materializedRef;
           }
-          const val = materializeProxy(target, this.copyRef, this.changed);
+          const val = materializeProxy(
+            this.originalTarget,
+            this.copyRef,
+            this.changed
+          );
           this.materializedRef = val;
           //this.revoke?.();
           return val;
@@ -35,7 +50,7 @@ export class ImmutableProxyHandler<T extends object>
       }
       default: {
         const returnValue = Reflect.get(
-          this.copyRef ? this.copyRef.ref : target,
+          this.copyRef ? this.copyRef.ref : this.originalTarget,
           propKey
         );
 
@@ -45,12 +60,13 @@ export class ImmutableProxyHandler<T extends object>
         if (typeof returnValue !== 'object' || isMaterializable(returnValue)) {
           return returnValue;
         }
-        const proxyVal = this.createProxy(returnValue);
+        const { draft, revoke } = this.createProxy(returnValue);
+        this.revocations.push(revoke);
         if (!this.copyRef) {
-          this.copyRef = makeCopyRef(target);
+          this.copyRef = makeCopyRef(this.originalTarget);
         }
-        Reflect.set(this.copyRef.ref, propKey, proxyVal);
-        return proxyVal;
+        Reflect.set(this.copyRef.ref, propKey, draft);
+        return draft;
       }
     }
   }
@@ -60,7 +76,7 @@ export class ImmutableProxyHandler<T extends object>
     }
     this.changed = true;
     if (!this.copyRef) {
-      this.copyRef = makeCopyRef(target);
+      this.copyRef = makeCopyRef(this.originalTarget);
     }
     const ret = Reflect.set(this.copyRef.ref, propKey, value, this.copyRef.ref);
     return ret;
@@ -70,7 +86,7 @@ export class ImmutableProxyHandler<T extends object>
       throw Error('object proxy expired');
     }
     if (!this.copyRef) {
-      this.copyRef = makeCopyRef(target);
+      this.copyRef = makeCopyRef(this.originalTarget);
     }
     return Reflect.deleteProperty(this.copyRef.ref, propKey);
   }
@@ -80,17 +96,27 @@ export class ImmutableProxyHandler<T extends object>
         return true;
       }
       default: {
-        return Reflect.has(this.copyRef ? this.copyRef.ref : target, propKey);
+        return Reflect.has(
+          this.copyRef ? this.copyRef.ref : this.originalTarget,
+          propKey
+        );
       }
     }
   }
   ownKeys(target: T) {
-    return Reflect.ownKeys(this.copyRef ? this.copyRef.ref : target);
+    return Reflect.ownKeys(
+      this.copyRef ? this.copyRef.ref : this.originalTarget
+    );
   }
   getOwnPropertyDescriptor(target: T, propKey: PropertyKey) {
-    return Reflect.getOwnPropertyDescriptor(
-      this.copyRef ? this.copyRef.ref : target,
+    const ownPropertyDescriptor = Reflect.getOwnPropertyDescriptor(
+      this.copyRef ? this.copyRef.ref : this.originalTarget,
       propKey
     );
+    console.log('foo');
+    if (ownPropertyDescriptor) {
+      ownPropertyDescriptor.configurable = true;
+    }
+    return ownPropertyDescriptor;
   }
 }
