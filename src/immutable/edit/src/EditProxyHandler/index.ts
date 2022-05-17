@@ -7,25 +7,20 @@ import { Proxied } from '../types/Proxied';
 import { Ref } from './src/types/Ref';
 
 export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
-  copyRef?: Ref<T>;
-  changed = false;
-  materializedRef:
+  private copyRef?: Ref<T>;
+  private changed = false;
+  private materializedRef:
     | {
         value: T;
         changed: boolean;
       }
     | undefined;
-  createProxy: <T extends object>(v: T) => Revokable<Proxied<T>>;
-  revocations: (() => void)[] = [];
-  originalTarget: T;
+  private revocations: (() => void)[] = [];
 
   constructor(
-    originalTarget: T,
-    createProxy: <T extends object>(v: T) => Revokable<Proxied<T>>
-  ) {
-    this.originalTarget = originalTarget;
-    this.createProxy = createProxy;
-  }
+    private originalTarget: T,
+    private createProxy: <T extends object>(v: T) => Revokable<Proxied<T>>
+  ) {}
   revoke() {
     for (const r of this.revocations) {
       r();
