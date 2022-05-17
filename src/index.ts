@@ -35,7 +35,8 @@ try {
     arr.reverse();
     arr.length = 5;
   };
-  const numRuns = 50000;
+  console.log('measuring performance...');
+  const numRuns = 20000;
   const editRunMeasurements = {
     name: 'edit',
     ...measureRunTime(numRuns, () => {
