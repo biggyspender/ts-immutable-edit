@@ -13,7 +13,7 @@ try {
   const srcData = deepFreeze({
     a: { a: 1 } as { a: number } | undefined,
     b: { animal: 'monkey' },
-    arr: [{ n: 1 }, { n: 2 }, { n: 3 }],
+    arr: [{ n: 1 }, { n: 2 }, { n: 3 }, { n: 4 }, { n: 5 }],
   });
 
   const editFunc = (draft: Mutable<typeof srcData>) => {
@@ -21,7 +21,7 @@ try {
     draft.b.animal = 'giraffe';
     const arr = draft.arr;
     arr.sort((a, b) => b.n - a.n);
-    arr.push({ n: 4 });
+    arr.push({ n: 6 });
     arr.shift();
     const xx = { a: 2 };
     draft.a = xx;
@@ -60,7 +60,7 @@ try {
   console.log(util.inspect(res1, undefined, 5, true));
   const res2 = produce(srcData, editFunc);
   console.log(util.inspect(res2, undefined, 5, true));
-  console.log(res1.arr[5] === res2.arr[5]);
+  console.log(res1.arr[4], res1.arr[4] === res2.arr[4]);
 } catch (e: any) {
   console.log(e.message, e.stack);
 }
