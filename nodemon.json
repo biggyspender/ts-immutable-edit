@@ -1,6 +1,0 @@
-{
-  "execMap": {
-    "ts": "node --expose-gc --loader ts-node/esm"
-  },
-  "quiet": true
-}

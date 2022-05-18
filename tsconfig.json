@@ -1,4 +1,10 @@
 {
+  "include": [
+    "./src/**/*.ts"
+  ],
+  "exclude": [
+    "./src/**/__tests__"
+  ],
   "compilerOptions": {
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -8,14 +14,23 @@
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "alwaysStrict": true,
-    "declaration": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "noEmit": true,
+    "lib": [
+      "es2020"
+    ],
+    "module": "commonjs",
+    "target": "es2020",
+    "rootDir": "./src",
+    "outDir": "build",
     "strict": true,
-    "lib": ["es2020"]
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true
   }
 }
