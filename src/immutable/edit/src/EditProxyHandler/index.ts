@@ -1,10 +1,10 @@
-import { MATERIALIZE_PROXY } from '../symbol/MATERIALIZE_PROXY';
-import { materializeProxy } from './src/materializeProxy';
-import { isMaterializable } from '../types/Materializable/guard/isMaterializable';
-import { makeCopyRef } from './src/makeCopyRef';
-import { Revokable } from '../createProxy';
-import { Proxied } from '../types/Proxied';
-import { Ref } from './src/types/Ref';
+import { Revokable } from "../createProxy";
+import { MATERIALIZE_PROXY } from "../symbol/MATERIALIZE_PROXY";
+import { isMaterializable } from "../types/Materializable/guard/isMaterializable";
+import { Proxied } from "../types/Proxied";
+import { makeCopyRef } from "./src/makeCopyRef";
+import { materializeProxy } from "./src/materializeProxy";
+import { Ref } from "./src/types/Ref";
 
 export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
   private copyRef?: Ref<T>;
@@ -49,10 +49,12 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
           propKey
         );
 
-        if (typeof returnValue === 'function') {
-          return (returnValue as Function).bind(receiver);
+        if (typeof returnValue === "function") {
+          return (returnValue as (...args: unknown[]) => unknown).bind(
+            receiver
+          );
         }
-        if (typeof returnValue !== 'object' || isMaterializable(returnValue)) {
+        if (typeof returnValue !== "object" || isMaterializable(returnValue)) {
           return returnValue;
         }
         const { draft, revoke } = this.createProxy(returnValue);
@@ -67,7 +69,7 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
   }
   set(target: T, propKey: PropertyKey, value: any, receiver: any) {
     if (this.materializedRef) {
-      throw Error('object proxy expired');
+      throw Error("object proxy expired");
     }
     this.changed = true;
     if (!this.copyRef) {
@@ -78,7 +80,7 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
   }
   deleteProperty(target: T, propKey: PropertyKey) {
     if (this.materializedRef) {
-      throw Error('object proxy expired');
+      throw Error("object proxy expired");
     }
     if (!this.copyRef) {
       this.copyRef = makeCopyRef(this.originalTarget);
@@ -108,7 +110,7 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
       this.copyRef ? this.copyRef.ref : this.originalTarget,
       propKey
     );
-    console.log('foo');
+    console.log("foo");
     if (ownPropertyDescriptor) {
       ownPropertyDescriptor.configurable = true;
     }

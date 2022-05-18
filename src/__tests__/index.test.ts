@@ -1,10 +1,11 @@
 import test from "ava";
-import { foo, bar } from "../index";
+import { edit } from "../index";
 
-test("foo()", (t) => {
-  t.is(foo(1, 2), 3);
-});
-
-test("bar()", (t) => {
-  t.is(bar(2, 1), 1);
+test("edit()", (t) => {
+  const data = { a: { b: 1 }, b: [{ a: 1 }, { a: 2 }] };
+  const edited = edit(data, (draft) => {
+    draft.b[0].a = 33;
+  });
+  const targetOutput = { a: { b: 1 }, b: [{ a: 33 }, { a: 2 }] };
+  t.deepEqual(edited, targetOutput);
 });
