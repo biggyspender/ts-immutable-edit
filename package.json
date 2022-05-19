@@ -4,6 +4,15 @@
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
   "types": "./build/index.d.ts",
+  "files": [
+    "/build"
+  ],
+  "readme": "./README.md",
+  "author": {
+    "name": "Chris Sperry",
+    "email": "christophermartinsperry@gmail.com"
+  },
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/biggyspender/ts-immutable-edit.git"
