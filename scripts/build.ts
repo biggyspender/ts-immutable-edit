@@ -9,6 +9,7 @@ const baseConfig = {
   sourcemap: true,
   external: [],
   bundle: true,
+  minify: true,
 };
 
 async function main() {
