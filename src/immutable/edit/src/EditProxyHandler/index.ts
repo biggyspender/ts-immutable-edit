@@ -16,11 +16,15 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
       }
     | undefined;
   private revocations: (() => void)[] = [];
-
+  private originalTarget: T;
+  private createProxy: <T extends object>(v: T) => Revokable<Proxied<T>>;
   constructor(
-    private originalTarget: T,
-    private createProxy: <T extends object>(v: T) => Revokable<Proxied<T>>
-  ) {}
+    originalTarget: T,
+    createProxy: <T extends object>(v: T) => Revokable<Proxied<T>>
+  ) {
+    this.originalTarget = originalTarget;
+    this.createProxy = createProxy;
+  }
   revoke() {
     for (const r of this.revocations) {
       r();
