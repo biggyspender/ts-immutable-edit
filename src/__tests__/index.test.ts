@@ -132,3 +132,11 @@ test("edit() array ownKeys after edit", (t) => {
   });
   t.deepEqual(d, { a: 1, b: 2 });
 });
+test("edit() freeze", (t) => {
+  const d = { a: 1, b: 2 };
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const out = edit(d, () => {}, { freeze: true });
+  const o = out as typeof d;
+  o.a = 2;
+  t.not(out.a, 2);
+});
