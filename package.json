@@ -23,6 +23,7 @@
     "lint:check": "eslint src --ext .ts",
     "test": "ava",
     "test:coverage": "nyc ava && nyc report --reporter=html",
+    "test:coverage:serve": "serve -l 3002 ./coverage",
     "test:setup": "node -r ./esbuild-hook ./scripts/testSetup",
     "spell:check": "cspell \"{README.md,CODE_OF_CONDUCT.md,CONTRIBUTING.md,.github/*.md,src/**/*.ts}\"",
     "cz": "cz",
@@ -51,6 +52,7 @@
     "nyc": "^15.1.0",
     "prettier": "^2.6.2",
     "semantic-release": "^19.0.2",
+    "serve": "^13.0.2",
     "source-map-support": "^0.5.21",
     "typescript": "^4.6.4"
   },
