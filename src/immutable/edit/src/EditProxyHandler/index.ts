@@ -88,6 +88,7 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
     if (this.materializedRef) {
       throw Error("object proxy expired");
     }
+    this.changed = true;
     if (!this.copyRef) {
       this.copyRef = makeCopyRef(this.originalTarget);
     }
@@ -116,9 +117,6 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
       this.copyRef ? this.copyRef.ref : this.originalTarget,
       propKey
     );
-    if (ownPropertyDescriptor) {
-      ownPropertyDescriptor.configurable = true;
-    }
     return ownPropertyDescriptor;
   }
 }
