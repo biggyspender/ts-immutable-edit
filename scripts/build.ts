@@ -3,7 +3,7 @@ import { build as esbuild } from "esbuild";
 
 const baseConfig = {
   platform: "node" as const,
-  target: "esnext" as const,
+  target: "es2016" as const,
   format: "cjs" as const,
   nodePaths: [path.join(__dirname, "../src")],
   sourcemap: true,

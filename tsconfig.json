@@ -10,7 +10,7 @@
       "es2020"
     ],
     "module": "commonjs",
-    "target": "es2020",
+    "target": "es2016",
     "rootDir": "./src",
     "outDir": "build",
     "strict": true,
