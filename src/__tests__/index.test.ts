@@ -49,9 +49,9 @@ test("edit() array length increase", (t) => {
   const data = [...new Array(10)].map((_, i) => ({ v: i }));
   const copy = [...data];
   const newArr = edit(data, (draft) => (draft.length = 12));
-  const regenedArray = [...data];
-  regenedArray.length = 12;
-  t.deepEqual(newArr, regenedArray);
+  const regeneratedArray = [...data];
+  regeneratedArray.length = 12;
+  t.deepEqual(newArr, regeneratedArray);
   t.deepEqual(data, copy);
   data.forEach((v, i) => t.is(v, copy[i]));
 });
@@ -59,9 +59,9 @@ test("edit() array length decrease", (t) => {
   const data = [...new Array(10)].map((_, i) => ({ v: i }));
   const copy = [...data];
   const newArr = edit(data, (draft) => (draft.length = 8));
-  const regenedArray = [...data];
-  regenedArray.length = 8;
-  t.deepEqual(newArr, regenedArray);
+  const regeneratedArray = [...data];
+  regeneratedArray.length = 8;
+  t.deepEqual(newArr, regeneratedArray);
   t.deepEqual(data, copy);
   data.forEach((v, i) => t.is(v, copy[i]));
 });

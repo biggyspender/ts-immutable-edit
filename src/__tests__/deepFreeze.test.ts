@@ -15,9 +15,9 @@ test("deepFreeze()", (t) => {
   t.is(f.a, temp);
   t.is(f.a, bb);
 
-  const newb = { a: 666 };
-  f.b[0] = newb;
-  t.not(f.b[0], newb);
+  const newB = { a: 666 };
+  f.b[0] = newB;
+  t.not(f.b[0], newB);
   t.is(f.b[0], aaa);
 
   f.b[0].a = 9999;
