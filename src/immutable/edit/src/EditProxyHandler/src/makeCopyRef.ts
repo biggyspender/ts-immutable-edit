@@ -1,4 +1,4 @@
-import { Ref } from './types/Ref';
+import { Ref } from "./types/Ref";
 
 export function makeCopyRef<T extends object>(v: T): Ref<T> {
   return Array.isArray(v)

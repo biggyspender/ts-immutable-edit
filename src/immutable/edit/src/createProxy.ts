@@ -1,5 +1,5 @@
-import { Proxied } from '../src/types/Proxied';
-import { createProxyHandler } from './createProxyHandler';
+import { Proxied } from "../src/types/Proxied";
+import { createProxyHandler } from "./createProxyHandler";
 
 export type Revokable<T extends object> = {
   draft: T;

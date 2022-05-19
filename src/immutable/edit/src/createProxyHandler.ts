@@ -1,6 +1,6 @@
-import { Revokable } from './createProxy';
-import { EditProxyHandler } from './EditProxyHandler';
-import { Proxied } from './types/Proxied';
+import { Revokable } from "./createProxy";
+import { EditProxyHandler } from "./EditProxyHandler";
+import { Proxied } from "./types/Proxied";
 
 export function createProxyHandler<T extends object>(
   originalTarget: T,
