@@ -1,8 +1,6 @@
-import { materialize } from '../../materialize';
-import { MATERIALIZE_PROXY } from '../../symbol/MATERIALIZE_PROXY';
-import { isMaterializable } from '../../types/Materializable/guard/isMaterializable';
-import { MaterializedValue } from './types/MaterializedValue';
-import { Ref } from './types/Ref';
+import { materialize } from "../../materialize";
+import { MaterializedValue } from "./types/MaterializedValue";
+import { Ref } from "./types/Ref";
 
 export function materializeProxy<T extends object>(
   originalTarget: T,
@@ -13,8 +11,9 @@ export function materializeProxy<T extends object>(
     return { value: originalTarget, changed: false };
   }
   let descendentsOrSelfChanged = changed;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const objRef: any = copyRef.ref;
-  var propNames = Object.getOwnPropertyNames(objRef);
+  const propNames = Object.getOwnPropertyNames(objRef);
   for (const k of propNames) {
     const { value, changed } = materialize(objRef[k]);
     descendentsOrSelfChanged = descendentsOrSelfChanged || changed;

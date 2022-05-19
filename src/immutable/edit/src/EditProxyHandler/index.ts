@@ -38,6 +38,7 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
     this.materializedRef = val;
     return val;
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   get(target: T, propKey: PropertyKey, receiver: any) {
     switch (propKey) {
       case MATERIALIZE_PROXY: {
@@ -67,7 +68,8 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
       }
     }
   }
-  set(target: T, propKey: PropertyKey, value: any, receiver: any) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  set(target: T, propKey: PropertyKey, value: any) {
     if (this.materializedRef) {
       throw Error("object proxy expired");
     }
@@ -100,17 +102,16 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
       }
     }
   }
-  ownKeys(target: T) {
+  ownKeys() {
     return Reflect.ownKeys(
       this.copyRef ? this.copyRef.ref : this.originalTarget
     );
   }
-  getOwnPropertyDescriptor(target: T, propKey: PropertyKey) {
+  getOwnPropertyDescriptor(_: T, propKey: PropertyKey) {
     const ownPropertyDescriptor = Reflect.getOwnPropertyDescriptor(
       this.copyRef ? this.copyRef.ref : this.originalTarget,
       propKey
     );
-    console.log("foo");
     if (ownPropertyDescriptor) {
       ownPropertyDescriptor.configurable = true;
     }

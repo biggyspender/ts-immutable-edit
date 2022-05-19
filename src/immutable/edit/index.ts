@@ -1,8 +1,8 @@
-import { Immutable } from 'immer';
-import { deepFreeze } from '../deepFreeze';
-import { Mutable } from '../types/Mutable';
-import { createProxy } from './src/createProxy';
-import { materialize } from './src/materialize';
+import { deepFreeze } from "../deepFreeze";
+import { Immutable } from "../types/Immutable";
+import { Mutable } from "../types/Mutable";
+import { createProxy } from "./src/createProxy";
+import { materialize } from "./src/materialize";
 
 type EditOptions = {
   freeze: boolean;
