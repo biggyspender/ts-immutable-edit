@@ -1,7 +1,16 @@
 {
   "version": "0.1",
   "language": "en",
-  "words": ["esbuild", "rmrf", "ts-immutable-edit", "socio", "octocat"],
+  "words": [
+    "esbuild",
+    "rmrf",
+    "ts-immutable-edit",
+    "socio",
+    "octocat",
+    "Proxied",
+    "Materializable",
+    "descendents"
+  ],
   "flagWords": [],
   "ignorePaths": [
     "package.json",
