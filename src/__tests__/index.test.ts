@@ -27,13 +27,40 @@ test("edit() general test", (t) => {
   t.deepEqual(edited, targetOutput);
   t.is(edited.b[0], bValItem0);
 });
-test("edit() array", (t) => {
+test("edit() array push", (t) => {
   const data = [...new Array(10)].map((_, i) => i);
   const copy = [...data];
   const pushed = edit(data, (draft) => draft.push(10, 11, 12));
   t.deepEqual(
     pushed,
     [...new Array(13)].map((_, i) => i)
+  );
+  t.deepEqual(data, copy);
+});
+test("edit() array unshift", (t) => {
+  const data = [...new Array(10)].map((_, i) => i);
+  const copy = [...data];
+  const pushed = edit(data, (draft) => draft.unshift(10, 11, 12));
+  t.deepEqual(pushed, [10, 11, 12, ...[...new Array(10)].map((_, i) => i)]);
+  t.deepEqual(data, copy);
+});
+test("edit() array shift", (t) => {
+  const data = [...new Array(10)].map((_, i) => i);
+  const copy = [...data];
+  const pushed = edit(data, (draft) => draft.shift());
+  t.deepEqual(
+    pushed,
+    [...new Array(9)].map((_, i) => i + 1)
+  );
+  t.deepEqual(data, copy);
+});
+test("edit() array pop", (t) => {
+  const data = [...new Array(10)].map((_, i) => i);
+  const copy = [...data];
+  const pushed = edit(data, (draft) => draft.pop());
+  t.deepEqual(
+    pushed,
+    [...new Array(9)].map((_, i) => i)
   );
   t.deepEqual(data, copy);
 });
@@ -45,6 +72,7 @@ test("edit() array reverse", (t) => {
   t.deepEqual(data, copy);
   data.forEach((v, i) => t.is(v, copy[i]));
 });
+
 test("edit() array length increase", (t) => {
   const data = [...new Array(10)].map((_, i) => ({ v: i }));
   const copy = [...data];
@@ -64,4 +92,43 @@ test("edit() array length decrease", (t) => {
   t.deepEqual(newArr, regeneratedArray);
   t.deepEqual(data, copy);
   data.forEach((v, i) => t.is(v, copy[i]));
+});
+test("edit() delete prop", (t) => {
+  const d = { a: 1, b: "hello" };
+  const edited = edit(d, (draft) => {
+    delete draft.a;
+  });
+  t.deepEqual(edited, { b: "hello" });
+  t.deepEqual(d, { a: 1, b: "hello" });
+});
+test("edit() array splice", (t) => {
+  const d = [0, 1, 2, 3, 4, 5];
+  const edited = edit(d, (draft) => {
+    draft.splice(1, 1);
+  });
+  t.deepEqual(edited, [0, 2, 3, 4, 5]);
+  t.deepEqual(d, [0, 1, 2, 3, 4, 5]);
+});
+test("edit() array copyWithin", (t) => {
+  const d = [0, 1, 2, 3, 4, 5];
+  const edited = edit(d, (draft) => {
+    draft.copyWithin(2, 0, 2);
+  });
+  t.deepEqual(edited, [0, 1, 0, 1, 4, 5]);
+  t.deepEqual(d, [0, 1, 2, 3, 4, 5]);
+});
+test("edit() array ownKeys", (t) => {
+  const d = { a: 1, b: 2 };
+  edit(d, (draft) => {
+    t.deepEqual(Object.keys(draft), ["a", "b"]);
+  });
+  t.deepEqual(d, { a: 1, b: 2 });
+});
+test("edit() array ownKeys after edit", (t) => {
+  const d = { a: 1, b: 2 };
+  edit(d, (draft) => {
+    draft.a = 0;
+    t.deepEqual(Object.keys(draft), ["a", "b"]);
+  });
+  t.deepEqual(d, { a: 1, b: 2 });
 });
