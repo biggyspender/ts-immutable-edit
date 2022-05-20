@@ -49,6 +49,7 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public get(target: T, propKey: PropertyKey, receiver: any) {
+    // console.log(`GET : ${String(propKey)}`);
     switch (propKey) {
       case MATERIALIZE_PROXY: {
         return this.materialize_.bind(this);
@@ -79,6 +80,7 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public set(target: T, propKey: PropertyKey, value: any) {
+    // console.log(`SET : ${String(propKey)}`);
     this.throwOnMaterialized_();
     this.changed_ = true;
     if (!this.copyRef_) {
@@ -94,6 +96,7 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
   }
 
   public deleteProperty(target: T, propKey: PropertyKey) {
+    // console.log(`DELETE : ${String(propKey)}`);
     this.throwOnMaterialized_();
     this.changed_ = true;
     if (!this.copyRef_) {
@@ -102,6 +105,7 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
     return Reflect.deleteProperty(this.copyRef_.ref_, propKey);
   }
   public has(target: T, propKey: PropertyKey) {
+    // console.log(`HAS : ${String(propKey)}`);
     switch (propKey) {
       case MATERIALIZE_PROXY: {
         return true;
@@ -115,11 +119,14 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
     }
   }
   ownKeys() {
+    // console.log(`OWNKEYS`);
     return Reflect.ownKeys(
       this.copyRef_ ? this.copyRef_.ref_ : this.originalTarget_
     );
   }
   getOwnPropertyDescriptor(_: T, propKey: PropertyKey) {
+    // console.log(`GETOWNPROPERTYDESCRIPTOR : ${String(propKey)}`);
+
     const ownPropertyDescriptor = Reflect.getOwnPropertyDescriptor(
       this.copyRef_ ? this.copyRef_.ref_ : this.originalTarget_,
       propKey
