@@ -85,5 +85,8 @@
   "lint-staged": {
     "src/**/*.ts": "eslint --cache --fix",
     "srg/**/*.--write": "prettier --write"
+  },
+  "overrides": {
+    "minimist": "1.2.6"
   }
 }
