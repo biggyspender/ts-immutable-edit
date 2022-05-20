@@ -15,7 +15,7 @@ export function createProxy<T extends object>(
   return {
     draft: proxy as Proxied<T>,
     revoke: () => {
-      proxyHandler.revoke();
+      proxyHandler.revoke_();
       revoke();
     },
   };

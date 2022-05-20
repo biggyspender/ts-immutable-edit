@@ -1,7 +1,7 @@
 import path from "path";
-import { build as esbuild } from "esbuild";
+import { build as esbuild, BuildOptions } from "esbuild";
 
-const baseConfig = {
+const baseConfig: BuildOptions = {
   platform: "node" as const,
   target: "es2016" as const,
   format: "cjs" as const,
@@ -10,6 +10,8 @@ const baseConfig = {
   external: [],
   bundle: true,
   minify: true,
+  mangleProps: /_$/,
+  treeShaking: true,
 };
 
 async function main() {
