@@ -140,3 +140,11 @@ test("edit() freeze", (t) => {
   o.a = 2;
   t.not(out.a, 2);
 });
+test("edit() draft JSON stringify", (t) => {
+  const d = { a: 1, b: { c: 2 } };
+  edit(d, (draft) => {
+    t.is(JSON.stringify(draft), `{"a":1,"b":{"c":2}}`);
+    draft.b.c = 3;
+    t.is(JSON.stringify(draft), `{"a":1,"b":{"c":3}}`);
+  });
+});
