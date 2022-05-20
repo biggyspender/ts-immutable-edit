@@ -1,4 +1,5 @@
 import test from "ava";
+import { deepFreeze } from "../immutable/deepFreeze";
 import { edit } from "../index";
 
 const bValItem0 = { a: 1 };
@@ -135,7 +136,7 @@ test("edit() array ownKeys after edit", (t) => {
 test("edit() freeze", (t) => {
   const d = { a: 1, b: 2 };
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const out = edit(d, () => {}, { freeze: true });
+  const out = edit(d, () => {}, { postEdit: deepFreeze });
   const o = out as typeof d;
   o.a = 2;
   t.not(out.a, 2);
