@@ -152,13 +152,13 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
     }
   }
   ownKeys() {
-    // console.log(`OWNKEYS`);
+    // console.log(`OWN_KEYS`);
     return Reflect.ownKeys(
       this.copyRef_ ? this.copyRef_.ref_ : this.originalTarget_
     );
   }
   getOwnPropertyDescriptor(_: T, propKey: PropertyKey) {
-    // console.log(`GETOWNPROPERTYDESCRIPTOR : ${String(propKey)}`);
+    // console.log(`GET_OWN_PROPERTY_DESCRIPTOR : ${String(propKey)}`);
 
     const ownPropertyDescriptor = Reflect.getOwnPropertyDescriptor(
       this.copyRef_ ? this.copyRef_.ref_ : this.originalTarget_,

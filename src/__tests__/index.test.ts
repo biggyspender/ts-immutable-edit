@@ -157,7 +157,7 @@ test("edit() draft JSON stringify", (t) => {
     t.is(JSON.stringify(draft), `{"a":1,"b":{"c":3}}`);
   });
 });
-test("edit() freezeTransform vs naiveFreezeTransfor", (t) => {
+test("edit() freezeTransform vs naiveFreezeTransform", (t) => {
   const d = { a: 1, b: 2 };
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const out = edit(d, () => {}, {
