@@ -4,7 +4,9 @@
 if npx git-branch-is -r "^(master|alpha|beta)$"
 then
   echo "Committing to master/alpha/beta branch. Running pre-commit tests" 
+  npm run type:check
   npm test
+  npm run spell:check
 else
   echo "Not committing to master/alpha/beta branch. Skipping pre-commit tests"
 fi
