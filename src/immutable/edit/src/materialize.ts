@@ -5,5 +5,5 @@ import { isMaterializable } from "./types/Materializable/guard/isMaterializable"
 export function materialize<T extends object>(v: T): MaterializedValue<T> {
   return isMaterializable(v)
     ? v[MATERIALIZE_PROXY]()
-    : { value: v, changed: false };
+    : { value_: v, changed_: false };
 }

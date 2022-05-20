@@ -5,27 +5,27 @@ import { materialize } from "../src/materialize";
 
 test("double materialize", (t) => {
   const v = { a: { b: 2 } };
-  const { draft } = createProxy(v);
-  const editableDraft = draft as Mutable<typeof v>;
+  const { draft_ } = createProxy(v);
+  const editableDraft = draft_ as Mutable<typeof v>;
   editableDraft.a.b = 5;
-  const { value: v1 } = materialize(draft);
-  const { value: v2 } = materialize(draft);
+  const { value_: v1 } = materialize(draft_);
+  const { value_: v2 } = materialize(draft_);
   t.is(v1, v2);
 });
 test("set after expiration", (t) => {
   const v = { a: { b: 2 } };
-  const { draft } = createProxy(v);
-  const editableDraft = draft as Mutable<typeof v>;
-  materialize(draft);
+  const { draft_ } = createProxy(v);
+  const editableDraft = draft_ as Mutable<typeof v>;
+  materialize(draft_);
   t.throws(() => {
     editableDraft.a = { b: 4 };
   });
 });
 test("delete after expiration", (t) => {
   const v = { a: { b: 2 } };
-  const { draft } = createProxy(v);
-  const editableDraft = draft as Mutable<typeof v>;
-  materialize(draft);
+  const { draft_ } = createProxy(v);
+  const editableDraft = draft_ as Mutable<typeof v>;
+  materialize(draft_);
   t.throws(() => {
     delete editableDraft.a;
   });

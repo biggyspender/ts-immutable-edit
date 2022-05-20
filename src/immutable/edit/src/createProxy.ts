@@ -2,8 +2,8 @@ import { Proxied } from "../src/types/Proxied";
 import { createProxyHandler } from "./createProxyHandler";
 
 export type Revokable<T extends object> = {
-  draft: T;
-  revoke: () => void;
+  draft_: T;
+  revoke_: () => void;
 };
 
 export function createProxy<T extends object>(
@@ -13,8 +13,8 @@ export function createProxy<T extends object>(
   const { proxy, revoke } = Proxy.revocable({}, proxyHandler);
   //proxyHandler.revoke = revoke;
   return {
-    draft: proxy as Proxied<T>,
-    revoke: () => {
+    draft_: proxy as Proxied<T>,
+    revoke_: () => {
       proxyHandler.revoke_();
       revoke();
     },

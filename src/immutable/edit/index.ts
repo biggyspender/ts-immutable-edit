@@ -27,12 +27,12 @@ export function edit<
   options?: O
 ): EditReturnType<O, T> {
   const opts = { ...defaultOptions, ...options };
-  const { draft, revoke } = createProxy(v);
-  editor(draft as Mutable<T>);
-  const { value } = materialize(draft);
-  revoke();
+  const { draft_, revoke_ } = createProxy(v);
+  editor(draft_ as Mutable<T>);
+  const { value_ } = materialize(draft_);
+  revoke_();
   if (opts.freeze) {
-    return deepFreeze(value) as EditReturnType<O, T>;
+    return deepFreeze(value_) as EditReturnType<O, T>;
   }
-  return value as EditReturnType<O, T>;
+  return value_ as EditReturnType<O, T>;
 }

@@ -1,4 +1,4 @@
 export type MaterializedValue<T extends object> = {
-  value: T;
-  changed: boolean;
+  value_: T;
+  changed_: boolean;
 };

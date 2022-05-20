@@ -8,19 +8,19 @@ export function materializeProxy<T extends object>(
   changed: boolean
 ): MaterializedValue<T> {
   if (!copyRef) {
-    return { value: originalTarget, changed: false };
+    return { value_: originalTarget, changed_: false };
   }
   let descendantsOrSelfChanged = changed;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const objRef: any = copyRef.ref;
+  const objRef: any = copyRef.ref_;
   const propNames = Object.getOwnPropertyNames(objRef);
   for (const k of propNames) {
-    const { value, changed } = materialize(objRef[k]);
-    descendantsOrSelfChanged = descendantsOrSelfChanged || changed;
-    objRef[k] = value;
+    const { value_, changed_ } = materialize(objRef[k]);
+    descendantsOrSelfChanged = descendantsOrSelfChanged || changed_;
+    objRef[k] = value_;
   }
   return {
-    value: descendantsOrSelfChanged ? copyRef.ref : originalTarget,
-    changed: descendantsOrSelfChanged,
+    value_: descendantsOrSelfChanged ? copyRef.ref_ : originalTarget,
+    changed_: descendantsOrSelfChanged,
   };
 }

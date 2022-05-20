@@ -1,3 +1,3 @@
 export type Ref<T extends object> = {
-  ref: T;
+  ref_: T;
 };
