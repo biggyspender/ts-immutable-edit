@@ -7,17 +7,32 @@ import { materializeProxy } from "./src/materializeProxy";
 import { MaterializedValue } from "./src/types/MaterializedValue";
 import { Ref } from "./src/types/Ref";
 
+//type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
+export type EventHandlers = {
+  onCanFreeze?: <T extends object>(v: T, deep: boolean) => void;
+};
+
+//type TTT = EventHandlers<string,EventTypes>
 export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
   private copyRef_?: Ref<T>;
   private changed_ = false;
   private materializedRef_: MaterializedValue<T> | undefined;
   private revocations_: (() => void)[] = [];
   private originalTarget_: T;
-  private createProxy_: <T extends object>(v: T) => Revokable<Proxied<T>>;
+  private createProxy_: <T extends object>(
+    v: T,
+    eventHandlers: EventHandlers
+  ) => Revokable<Proxied<T>>;
+  private eventHandlers_: EventHandlers;
   constructor(
     originalTarget: T,
-    createProxy: <T extends object>(v: T) => Revokable<Proxied<T>>
+    createProxy: <T extends object>(
+      v: T,
+      eventHandlers: EventHandlers
+    ) => Revokable<Proxied<T>>,
+    eventHandlers: EventHandlers
   ) {
+    this.eventHandlers_ = eventHandlers;
     this.originalTarget_ = originalTarget;
     this.createProxy_ = createProxy;
   }
@@ -47,6 +62,20 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
     }
   }
 
+  private setChanged_() {
+    // if (this.eventHandlers_.discarded && !this.changed_) {
+    //   this.eventHandlers_.discarded(this.originalTarget_);
+    // }
+    this.changed_ = true;
+    if (!this.copyRef_) {
+      this.copyRef_ = makeCopyRef(this.originalTarget_);
+      if (this.eventHandlers_.onCanFreeze) {
+        this.eventHandlers_.onCanFreeze(this.copyRef_.ref_, false);
+      }
+    }
+    return this.copyRef_;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public get(target: T, propKey: PropertyKey, receiver: any) {
     // console.log(`GET : ${String(propKey)}`);
@@ -68,7 +97,10 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
         if (typeof returnValue !== "object" || isMaterializable(returnValue)) {
           return returnValue;
         }
-        const { draft_, revoke_ } = this.createProxy_(returnValue);
+        const { draft_, revoke_ } = this.createProxy_(
+          returnValue,
+          this.eventHandlers_
+        );
         this.revocations_.push(revoke_);
         if (!this.copyRef_) {
           this.copyRef_ = makeCopyRef(this.originalTarget_);
@@ -82,27 +114,28 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
   public set(target: T, propKey: PropertyKey, value: any) {
     // console.log(`SET : ${String(propKey)}`);
     this.throwOnMaterialized_();
-    this.changed_ = true;
-    if (!this.copyRef_) {
-      this.copyRef_ = makeCopyRef(this.originalTarget_);
+    const copyRef = this.setChanged_();
+    if (
+      this.eventHandlers_.onCanFreeze &&
+      typeof value === "object" &&
+      !isMaterializable(value)
+    ) {
+      this.eventHandlers_.onCanFreeze(value, true);
     }
-    const ret = Reflect.set(
-      this.copyRef_.ref_,
-      propKey,
-      value,
-      this.copyRef_.ref_
-    );
+    const ret = Reflect.set(copyRef.ref_, propKey, value, copyRef.ref_);
     return ret;
   }
 
   public deleteProperty(target: T, propKey: PropertyKey) {
     // console.log(`DELETE : ${String(propKey)}`);
     this.throwOnMaterialized_();
-    this.changed_ = true;
-    if (!this.copyRef_) {
-      this.copyRef_ = makeCopyRef(this.originalTarget_);
-    }
-    return Reflect.deleteProperty(this.copyRef_.ref_, propKey);
+    const copyRef = this.setChanged_();
+    //    const v = Reflect.get(copyRef.ref_, propKey);
+    const deleted = Reflect.deleteProperty(copyRef.ref_, propKey);
+    // if (this.eventHandlers_.discarded && typeof v === "object" && deleted) {
+    //   this.eventHandlers_.discarded(v);
+    // }
+    return deleted;
   }
   public has(target: T, propKey: PropertyKey) {
     // console.log(`HAS : ${String(propKey)}`);

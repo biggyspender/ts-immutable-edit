@@ -1,6 +1,6 @@
 import test from "ava";
-import { deepFreeze } from "../immutable/deepFreeze";
-import { edit } from "../index";
+import { naiveFreezeTransform } from "../immutable/naiveFreezeTransform";
+import { edit, freezeTransform } from "../index";
 
 const bValItem0 = { a: 1 };
 const bVal = [bValItem0, { a: 2 }];
@@ -136,7 +136,15 @@ test("edit() array ownKeys after edit", (t) => {
 test("edit() freeze", (t) => {
   const d = { a: 1, b: 2 };
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const out = edit(d, () => {}, { postEdit: deepFreeze });
+  const out = edit(
+    d,
+    (draft) => {
+      draft.a = 55;
+    },
+    {
+      transform: freezeTransform,
+    }
+  );
   const o = out as typeof d;
   o.a = 2;
   t.not(out.a, 2);
@@ -148,4 +156,17 @@ test("edit() draft JSON stringify", (t) => {
     draft.b.c = 3;
     t.is(JSON.stringify(draft), `{"a":1,"b":{"c":3}}`);
   });
+});
+test("edit() freezeTransform vs naiveFreezeTransfor", (t) => {
+  const d = { a: 1, b: 2 };
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const out = edit(d, () => {}, {
+    transform: freezeTransform,
+  });
+  t.false(Object.isFrozen(out));
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const out2 = edit(d, () => {}, {
+    transform: naiveFreezeTransform,
+  });
+  t.true(Object.isFrozen(out2));
 });

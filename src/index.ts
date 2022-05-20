@@ -13,5 +13,7 @@
  */
 export { edit } from "./immutable/edit";
 export { deepFreeze } from "./immutable/deepFreeze";
+export { freezeTransform } from "./immutable/freezeTransform";
+export { naiveFreezeTransform } from "./immutable/naiveFreezeTransform";
 export { Immutable } from "./immutable/types/Immutable";
 export { Mutable } from "./immutable/types/Mutable";
