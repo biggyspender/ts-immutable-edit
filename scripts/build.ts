@@ -3,7 +3,7 @@ import { build as esbuild, BuildOptions, analyzeMetafile } from "esbuild";
 
 const baseConfig: BuildOptions = {
   platform: "node" as const,
-  target: "es2016" as const,
+  target: "es2015" as const,
   format: "cjs" as const,
   nodePaths: [path.join(__dirname, "../src")],
   sourcemap: true,
