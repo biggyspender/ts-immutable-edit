@@ -11,7 +11,7 @@
  * https://github.com/biggyspender/ts-immutable-edit/blob/master/LICENSE
  *
  */
-export { edit } from "./immutable/edit";
+export { edit, EditOptions, Freezable } from "./immutable/edit";
 export { deepFreeze } from "./immutable/deepFreeze";
 export { freezeTransform } from "./immutable/freezeTransform";
 export { naiveFreezeTransform } from "./immutable/naiveFreezeTransform";
