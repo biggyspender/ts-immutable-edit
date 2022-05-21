@@ -8,15 +8,19 @@ export type Freezable = {
   needsDeep: boolean;
 };
 
+export type EditOptions<T extends object, R> = {
+  transform: (v: T, freezableItems: Freezable[]) => R;
+};
+
 export function edit<T extends object, R = T>(
   v: T,
   editor: (draft: Mutable<T>) => void,
-  options?: { transform: (v: T, freezableItems: Freezable[]) => R }
+  options?: EditOptions<T, R>
 ): R {
   const freezableItems: Freezable[] = [];
   const proxyEventHandlers: EventHandlers | undefined = options?.transform
     ? {
-        onCanFreeze: (value, needsDeep) => {
+        onFreezableObject: (value, needsDeep) => {
           freezableItems.push({ value, needsDeep });
         },
       }

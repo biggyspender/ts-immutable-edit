@@ -9,7 +9,7 @@ import { Ref } from "./src/types/Ref";
 
 //type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
 export type EventHandlers = {
-  onCanFreeze?: <T extends object>(v: T, deep: boolean) => void;
+  onFreezableObject?: <T extends object>(v: T, deep: boolean) => void;
 };
 
 //type TTT = EventHandlers<string,EventTypes>
@@ -47,6 +47,9 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
       this.changed_
     );
     this.materializedRef_ = val;
+    if (val.changed_ && this.eventHandlers_.onFreezableObject) {
+      this.eventHandlers_.onFreezableObject(val.value_, false);
+    }
     return val;
   }
 
@@ -69,9 +72,6 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
     this.changed_ = true;
     if (!this.copyRef_) {
       this.copyRef_ = makeCopyRef(this.originalTarget_);
-      if (this.eventHandlers_.onCanFreeze) {
-        this.eventHandlers_.onCanFreeze(this.copyRef_.ref_, false);
-      }
     }
     return this.copyRef_;
   }
@@ -116,11 +116,11 @@ export class EditProxyHandler<T extends object> implements ProxyHandler<T> {
     this.throwOnMaterialized_();
     const copyRef = this.setChanged_();
     if (
-      this.eventHandlers_.onCanFreeze &&
+      this.eventHandlers_.onFreezableObject &&
       typeof value === "object" &&
       !isMaterializable(value)
     ) {
-      this.eventHandlers_.onCanFreeze(value, true);
+      this.eventHandlers_.onFreezableObject(value, true);
     }
     const ret = Reflect.set(copyRef.ref_, propKey, value, copyRef.ref_);
     return ret;

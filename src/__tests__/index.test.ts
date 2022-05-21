@@ -170,3 +170,55 @@ test("edit() freezeTransform vs naiveFreezeTransform", (t) => {
   });
   t.true(Object.isFrozen(out2));
 });
+test("edit() naiveFreezeTransform", (t) => {
+  const d = { a: 1, b: { a: 1 }, c: [{ a: 1 }, { a: 2 }] };
+  const out = edit(
+    d,
+    (draft) => {
+      draft.c[1].a = 3;
+    },
+    {
+      transform: naiveFreezeTransform,
+    }
+  );
+  t.true(Object.isFrozen(out));
+  t.true(Object.isFrozen(out.b));
+  t.true(Object.isFrozen(out.c));
+  t.true(Object.isFrozen(out.c[0]));
+  t.true(Object.isFrozen(out.c[1]));
+});
+test("edit() freezeTransform", (t) => {
+  const d = { a: 1, b: { a: 1 }, c: [{ a: 1 }, { a: 2 }] };
+  const out = edit(
+    d,
+    (draft) => {
+      draft.c[1].a = 3;
+    },
+    {
+      transform: freezeTransform,
+    }
+  );
+  t.true(Object.isFrozen(out));
+  t.false(Object.isFrozen(out.b));
+  t.true(Object.isFrozen(out.c));
+  t.false(Object.isFrozen(out.c[0]));
+  t.true(Object.isFrozen(out.c[1]));
+});
+test("edit() freezeTransform with needsDeep", (t) => {
+  const d = { a: 1, b: { a: 1 }, c: [{ a: 1 }, { a: 2 }] };
+  const out = edit(
+    d,
+    (draft) => {
+      // replace the entire object tree
+      draft.c = [{ a: 9999 }];
+    },
+    {
+      transform: freezeTransform,
+    }
+  );
+  t.true(Object.isFrozen(out));
+  t.false(Object.isFrozen(out.b));
+  t.true(Object.isFrozen(out.c));
+  t.true(Object.isFrozen(out.c[0]));
+  t.true(Object.isFrozen(out.c[1]));
+});
