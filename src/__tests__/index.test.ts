@@ -1,6 +1,10 @@
 import test from "ava";
-import { naiveFreezeTransform } from "../immutable/naiveFreezeTransform";
-import { edit, freezeTransform } from "../index";
+import {
+  edit,
+  configureEdit,
+  freezeTransform,
+  naiveFreezeTransform,
+} from "../index";
 
 const bValItem0 = { a: 1 };
 const bVal = [bValItem0, { a: 2 }];
@@ -218,6 +222,32 @@ test("edit() freezeTransform with needsDeep", (t) => {
   );
   t.true(Object.isFrozen(out));
   t.false(Object.isFrozen(out.b));
+  t.true(Object.isFrozen(out.c));
+  t.true(Object.isFrozen(out.c[0]));
+  t.true(Object.isFrozen(out.c[1]));
+});
+test("configureEdit() freezeTransform with needsDeep", (t) => {
+  const edit = configureEdit({ transform: freezeTransform });
+  const d = { a: 1, b: { a: 1 }, c: [{ a: 1 }, { a: 2 }] };
+  const out = edit(d, (draft) => {
+    // replace the entire object tree
+    draft.c = [{ a: 9999 }];
+  });
+  t.true(Object.isFrozen(out));
+  t.false(Object.isFrozen(out.b));
+  t.true(Object.isFrozen(out.c));
+  t.true(Object.isFrozen(out.c[0]));
+  t.true(Object.isFrozen(out.c[1]));
+});
+test("configureEdit() naiveFreezeTransform", (t) => {
+  const edit = configureEdit({ transform: naiveFreezeTransform });
+
+  const d = { a: 1, b: { a: 1 }, c: [{ a: 1 }, { a: 2 }] };
+  const out = edit(d, (draft) => {
+    draft.c[1].a = 3;
+  });
+  t.true(Object.isFrozen(out));
+  t.true(Object.isFrozen(out.b));
   t.true(Object.isFrozen(out.c));
   t.true(Object.isFrozen(out.c[0]));
   t.true(Object.isFrozen(out.c[1]));

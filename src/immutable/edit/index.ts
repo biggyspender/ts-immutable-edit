@@ -11,6 +11,10 @@ export type Freezable = {
 export type EditOptions<T extends object, R> = {
   transform: (v: T, freezableItems: Freezable[]) => R;
 };
+export const configureEdit =
+  <T extends object, R = never>(options: EditOptions<T, R>) =>
+  (v: T, editor: (draft: Mutable<T>) => void) =>
+    edit(v, editor, options);
 
 export function edit<T extends object, R = T>(
   v: T,
