@@ -28,7 +28,7 @@
   "scripts": {
     "build": "run-s clean type:dts build:main build:reportsize",
     "build:main": "node -r ./esbuild-hook ./scripts/build",
-    "build:reportsize": "echo \"GZipped size: $(cat build/esm/index.js | gzip -c | wc -c) bytes\"",
+    "build:reportsize": "./shell-scripts/report-size.sh",
     "clean": "node -r ./esbuild-hook ./scripts/clean",
     "type:dts": "tsc --emitDeclarationOnly",
     "type:check": "tsc --noEmit",
