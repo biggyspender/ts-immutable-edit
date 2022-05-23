@@ -49,13 +49,14 @@ Edit your state by mutating the `draft` proxy that passed to the supplied callba
 ```typescript
 const newState = edit(sourceState, (draft) => {
   draft.c[0].d = 10;
+  draft.c.reverse();
 });
 ```
 
 Now, `newState` is
 
 ```typescript
-{ a: {b: "foo"}, c: [{d: 1}, {d: 2}]}
+{ a: { b: 'foo' }, c: [ { d: 2 }, { d: 10 } ] }
 ```
 
 but `sourceState` is completely untouched.
@@ -64,16 +65,21 @@ The `edit` function assumes that all data passed to it is considered immutable.
 
 As much of the source state as possible will be reused.
 
-In the example above, all of the following statements will be `true`:
+In the example above, all of the following statements will log `true`:
 
 ```typescript
-sourceState !== newState;
-sourceState.a === newState.a;
-sourceState.c !== newState.c;
-sourceState.c[0] !== newState.c[0];
-sourceState.c[1] === newState.c[1];
+// the following parts of the new object graph are newly generated
+console.log(sourceState !== newState);
+console.log(sourceState.c !== newState.c);
+console.log(sourceState.c[0] !== newState.c[1]);
+
+// but unchanged parts of the object graph are copied from source
+console.log(sourceState.a === newState.a);
+console.log(sourceState.c[1] === newState.c[0]);
 ```
 
 ## Example / Play
 
-See the code above in action on [⚡StackBlitz](https://stackblitz.com/edit/ts-immutable-edit-demo?hideExplorer=1&hideNavigation=1&hidedevtools=1&embed=1&file=src/index.ts&view=editor).
+See the code above in action on [⚡StackBlitz](https://stackblitz.com/fork/ts-immutable-edit-demo?file=src/index.ts&view=editor).
+
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/ts-immutable-edit-demo?file=src/index.ts&view=editor)
