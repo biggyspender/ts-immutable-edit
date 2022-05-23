@@ -1,14 +1,16 @@
 {
-  "version": "0.1",
+  "version": "0.2",
   "language": "en",
   "words": [
     "esbuild",
     "rmrf",
     "ts-immutable-edit",
-    "socio",
-    "octocat",
     "Proxied",
-    "Materializable"
+    "Materializable",
+    "gzipped",
+    "immer",
+    "socio",
+    "octocat"
   ],
   "flagWords": [],
   "ignorePaths": [
