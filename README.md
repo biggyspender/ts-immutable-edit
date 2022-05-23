@@ -73,3 +73,5 @@ sourceState.c !== newState.c;
 sourceState.c[0] !== newState.c[0];
 sourceState.c[1] === newState.c[1];
 ```
+
+<iframe src="https://stackblitz.com/edit/ts-immutable-edit-demo?hideExplorer=1&hideNavigation=1&hidedevtools=1&embed=1&file=src/index.ts&view=editor"></iframe>
