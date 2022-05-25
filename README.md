@@ -9,12 +9,21 @@ A trifling<sup>\*</sup>, super-fast library for state management. <sub>(\*[appro
 [![Bundlephobia Size](https://img.shields.io/bundlephobia/minzip/ts-immutable-edit.svg)](https://bundlephobia.com/package/ts-immutable-edit)
 [![ts-immutable-edit](https://github.com/biggyspender/ts-immutable-edit/actions/workflows/ts-immutable-edit.yml/badge.svg?branch=master)](https://github.com/biggyspender/ts-immutable-edit/actions/workflows/ts-immutable-edit.yml)
 
+## Introduction
+
+Just like [immer](https://github.com/immerjs/immer), this tiny library makes it easy to generate your next state by applying mutations to a [proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) around your existing state.
+
+Unlike [immer](https://github.com/immerjs/immer), this library targets only ES6/ES2015 and above and doesn't consider anything other than plain objects and arrays (i.e. things that can be serialized to JSON and back).
+
+Written from the ground-up in TypeScript, the package contains built-in type declarations.
+
+
 ## Table of contents
 
 - [ts-immutable-edit](#ts-immutable-edit)
   - [Mutate your immutable](#mutate-your-immutable)
-  - [Table of contents](#table-of-contents)
   - [Introduction](#introduction)
+  - [Table of contents](#table-of-contents)
   - [Get started](#get-started)
     - [Installation](#installation)
       - [NPM](#npm)
@@ -25,14 +34,6 @@ A trifling<sup>\*</sup>, super-fast library for state management. <sub>(\*[appro
     - [Transforms](#transforms)
     - [Baking-in the `transform` option](#baking-in-the-transform-option)
   - [Example / Play](#example--play)
-
-## Introduction
-
-Just like [immer](https://github.com/immerjs/immer), this tiny library makes it easy to generate your next state by applying mutations to a [proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) around your existing state.
-
-Unlike [immer](https://github.com/immerjs/immer), this library targets only ES6/ES2015 and above and doesn't consider anything other than plain objects and arrays (i.e. things that can be serialized to JSON and back).
-
-Written from the ground-up in TypeScript, the package contains built-in type declarations.
 
 ## Get started
 
