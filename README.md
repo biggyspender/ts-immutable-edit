@@ -83,7 +83,7 @@ console.log(sourceState.c[1] === newState.c[0]);
 
 In the examples above, although the data is treated as if it were immutable, the developer is free to mutate both the source state and the newly generated state. While this offers the fastest mode of operation, it might be desirable to work with an object graph that has been frozen via the [`Object.freeze`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) function.
 
-### [`deepFreeze`](./src/immutable/deepFreeze.ts)
+### [`deepFreeze`]
 
 Included in the library is the [`deepFreeze`](./src/immutable/deepFreeze.ts) function.
 
@@ -112,7 +112,42 @@ obj.a.b = "woo";
 readOnlyObj.a.b = "woo";
 ```
 
-###
+### Transforms
+
+The behavior of the `edit` function can be changed by providing a `transform` function in the optional `options` third parameter.
+
+This library provides the `freezeTransform` function, which can be supplied to the `transform` option.
+
+```typescript
+const source = { a: 1, b: { a: 1 }, c: [{ a: 1 }, { a: 2 }] };
+const frozenSource = deepFreeze(source);
+const modified = edit(
+  frozenSource,
+  (draft) => {
+    draft.c[1].a = 3;
+  },
+  {
+    transform: freezeTransform,
+  }
+);
+```
+
+When applied, the `freezeTransform` will "intelligently" ensure that any modifications to the object graph are also frozen while skipping any part of the object graph that was copied directly from source. Therefore, when using the `freezeTransform`, it is advisable to ensure the the original state is already recursively deep frozen (see [deepFreeze](#deepfreeze) section above). This will ensure that any edited object is also _completely_ deep frozen.
+
+### Baking-in the `transform` option
+
+Instead of supplying (a 3<sup>rd</sup>) `options` parameter to `edit`, there exists a higher-order function, [`configureEdit`](./src/immutable/edit/index.ts#L14) which allows the user to bake-in the options into the `edit` function.
+
+So, to have an `edit` function which **_always_** applies the `freezeTransform`, just generate your own `edit` function using the `configureEdit` function:
+
+```typescript
+const edit = configureEdit({ transform: freezeTransform });
+const source = { a: 1, b: { a: 1 }, c: [{ a: 1 }, { a: 2 }] };
+const frozenSource = deepFreeze(source);
+const modified = edit(frozenSource, (draft) => {
+  draft.c[1].a = 3;
+});
+```
 
 ## Example / Play
 
