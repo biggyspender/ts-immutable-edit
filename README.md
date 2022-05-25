@@ -151,6 +151,11 @@ const frozenSource = deepFreeze(source);
 const modified = edit(frozenSource, (draft) => {
   draft.c[1].a = 3;
 });
+// The line below will cause a TypeScript error
+// Under "use strict", it will also cause a run-time
+// error, and without "use strict", no error, but
+// no modification either.
+modified.a = 2;
 ```
 
 ## Example / Play
