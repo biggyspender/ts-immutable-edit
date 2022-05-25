@@ -31,9 +31,7 @@ npm install ts-immutable-edit
 yarn add ts-immutable-edit
 ```
 
-### Get Started
-
-#### Basic Usage
+### Basic Usage
 
 Import the `edit` function:
 
@@ -90,6 +88,7 @@ In the examples above, although the data is treated as if it were immutable, the
 Included in the library is the [`deepFreeze`](./src/immutable/deepFreeze.ts) function.
 
 ```typescript
+import { deepFreeze } from "ts-immutable-edit";
 const obj = { a: { b: "foo" }, c: [{ d: 2 }, { d: 10 }] };
 deepFreeze(obj);
 ```
@@ -101,6 +100,7 @@ This makes it impossible to mutate any object/array in the object graph at runti
 The `deepFreeze` function does _not_ make a copy of the object passed to it, instead freezing the object that is passed to it in-place. However, in TypeScript, the return value of `deepFreeze` is modified such that all props are `readonly`, as described above.
 
 ```typescript
+import { deepFreeze } from "ts-immutable-edit";
 const obj = { a: { b: "foo" }, c: [{ d: 2 }, { d: 10 }] };
 const readOnlyObj = deepFreeze(obj);
 
@@ -121,6 +121,7 @@ The behavior of the `edit` function can be changed by providing a `transform` fu
 This library provides the `freezeTransform` function, which can be supplied to the `transform` option.
 
 ```typescript
+import { deepFreeze, freezeTransform } from "ts-immutable-edit";
 const source = { a: 1, b: { a: 1 }, c: [{ a: 1 }, { a: 2 }] };
 const frozenSource = deepFreeze(source);
 const modified = edit(
@@ -143,6 +144,7 @@ Instead of supplying (a 3<sup>rd</sup>) `options` parameter to `edit`, there exi
 So, to have an `edit` function which **_always_** applies the `freezeTransform`, just generate your own `edit` function using the `configureEdit` function:
 
 ```typescript
+import { deepFreeze, freezeTransform, configureEdit } from "ts-immutable-edit";
 const edit = configureEdit({ transform: freezeTransform });
 const source = { a: 1, b: { a: 1 }, c: [{ a: 1 }, { a: 2 }] };
 const frozenSource = deepFreeze(source);
