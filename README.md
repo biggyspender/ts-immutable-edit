@@ -2,9 +2,10 @@
 
 [![NPM](https://img.shields.io/npm/l/ts-immutable-edit)](https://www.npmjs.com/package/ts-immutable-edit)
 [![NPM](https://img.shields.io/npm/v/ts-immutable-edit)](https://www.npmjs.com/package/ts-immutable-edit)
+[![Bundlephobia Size](https://img.shields.io/bundlephobia/minzip/ts-immutable-edit.svg)](https://www.npmjs.com/package/ts-immutable-edit)
 [![ts-immutable-edit](https://github.com/biggyspender/ts-immutable-edit/actions/workflows/ts-immutable-edit.yml/badge.svg?branch=master)](https://github.com/biggyspender/ts-immutable-edit/actions/workflows/ts-immutable-edit.yml)
 
-A trifling<sup>\*</sup>, super-fast library for state management. <sub>(\*[just over 1KiB, gzipped](https://bundlephobia.com/package/ts-immutable-edit))</sub>
+A trifling<sup>\*</sup>, super-fast library for state management. <sub>(\*[approx 1KiB, gzipped](https://bundlephobia.com/package/ts-immutable-edit))</sub>
 
 ## Mutate your immutable
 
