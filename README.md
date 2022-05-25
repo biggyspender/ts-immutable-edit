@@ -1,5 +1,7 @@
 # ts-immutable-edit
 
+## Mutate your immutable
+
 A trifling<sup>\*</sup>, super-fast library for state management. <sub>(\*[approx 1KiB, gzipped](https://bundlephobia.com/package/ts-immutable-edit))</sub>
 
 [![NPM](https://img.shields.io/npm/l/ts-immutable-edit)](https://www.npmjs.com/package/ts-immutable-edit)
@@ -7,7 +9,24 @@ A trifling<sup>\*</sup>, super-fast library for state management. <sub>(\*[appro
 [![Bundlephobia Size](https://img.shields.io/bundlephobia/minzip/ts-immutable-edit.svg)](https://bundlephobia.com/package/ts-immutable-edit)
 [![ts-immutable-edit](https://github.com/biggyspender/ts-immutable-edit/actions/workflows/ts-immutable-edit.yml/badge.svg?branch=master)](https://github.com/biggyspender/ts-immutable-edit/actions/workflows/ts-immutable-edit.yml)
 
-## Mutate your immutable
+## Table of contents
+
+- [ts-immutable-edit](#ts-immutable-edit)
+  - [Mutate your immutable](#mutate-your-immutable)
+  - [Table of contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Get started](#get-started)
+    - [Installation](#installation)
+      - [NPM](#npm)
+      - [Yarn](#yarn)
+    - [Basic Usage](#basic-usage)
+  - [Real immutability](#real-immutability)
+    - [`deepFreeze`](#deepfreeze)
+    - [Transforms](#transforms)
+    - [Baking-in the `transform` option](#baking-in-the-transform-option)
+  - [Example / Play](#example--play)
+
+## Introduction
 
 Just like [immer](https://github.com/immerjs/immer), this tiny library makes it easy to generate your next state by applying mutations to a [proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) around your existing state.
 
