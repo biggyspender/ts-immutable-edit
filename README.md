@@ -31,7 +31,9 @@ npm install ts-immutable-edit
 yarn add ts-immutable-edit
 ```
 
-### Usage
+### Get Started
+
+#### Basic Usage
 
 Import the `edit` function:
 
@@ -83,7 +85,7 @@ console.log(sourceState.c[1] === newState.c[0]);
 
 In the examples above, although the data is treated as if it were immutable, the developer is free to mutate both the source state and the newly generated state. While this offers the fastest mode of operation, it might be desirable to work with an object graph that has been frozen via the [`Object.freeze`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) function.
 
-### [`deepFreeze`]
+### `deepFreeze`
 
 Included in the library is the [`deepFreeze`](./src/immutable/deepFreeze.ts) function.
 
