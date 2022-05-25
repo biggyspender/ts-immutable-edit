@@ -97,7 +97,7 @@ This function will recursively traverse the object graph, freezing every object 
 
 This makes it impossible to mutate any object/array in the object graph at runtime and (in the case of TypeScript) will also mean that any attempt to make modifications to a deep-frozen object will be flagged as an error in the IDE.
 
-The `deepFreeze` function does _not_ make a copy of the object passed to it, instead freezing the object that is passed to it in-place. However, in TypeScript, the return value of `deepFreeze` is modified such that all props are `readonly`, as described above.
+The `deepFreeze` function does _not_ make a copy of the object passed to it, instead freezing the object that is passed to it in-place. However, in TypeScript, the supplied object is returned with its type recursively modified such that all props are `readonly`, as described above.
 
 ```typescript
 import { deepFreeze } from "ts-immutable-edit";
