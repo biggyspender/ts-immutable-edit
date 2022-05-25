@@ -1,4 +1,4 @@
-# ts-immutable-edit
+# `ts-immutable-edit`
 
 [![NPM](https://img.shields.io/npm/l/ts-immutable-edit)](https://www.npmjs.com/package/ts-immutable-edit)
 [![NPM](https://img.shields.io/npm/v/ts-immutable-edit)](https://www.npmjs.com/package/ts-immutable-edit)
@@ -78,6 +78,41 @@ console.log(sourceState.c[0] !== newState.c[1]);
 console.log(sourceState.a === newState.a);
 console.log(sourceState.c[1] === newState.c[0]);
 ```
+
+## Real immutability
+
+In the examples above, although the data is treated as if it were immutable, the developer is free to mutate both the source state and the newly generated state. While this offers the fastest mode of operation, it might be desirable to work with an object graph that has been frozen via the [`Object.freeze`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) function.
+
+### [`deepFreeze`](./src/immutable/deepFreeze.ts)
+
+Included in the library is the [`deepFreeze`](./src/immutable/deepFreeze.ts) function.
+
+```typescript
+const obj = { a: { b: "foo" }, c: [{ d: 2 }, { d: 10 }] };
+deepFreeze(obj);
+```
+
+This function will recursively traverse the object graph, freezing every object or array that is encountered. In TypeScript, the object returned from `deepFreeze` will have all of its properties marked as `readonly` (this is applied recursively).
+
+This makes it impossible to mutate any object/array in the object graph at runtime and (in the case of TypeScript) will also mean that any attempt to make modifications to a deep-frozen object will be flagged as an error in the IDE.
+
+The `deepFreeze` function does _not_ make a copy of the object passed to it, instead freezing the object that is passed to it in-place. However, in TypeScript, the return value of `deepFreeze` is modified such that all props are `readonly`, as described above.
+
+```typescript
+const obj = { a: { b: "foo" }, c: [{ d: 2 }, { d: 10 }] };
+const readOnlyObj = deepFreeze(obj);
+
+console.log(obj === readOnlyObj); //true
+
+// No runtime error unless "use strict" is enabled
+// but value `obj.a.b` won't change.
+obj.a.b = "woo";
+
+// TS compiler error
+readOnlyObj.a.b = "woo";
+```
+
+###
 
 ## Example / Play
 
