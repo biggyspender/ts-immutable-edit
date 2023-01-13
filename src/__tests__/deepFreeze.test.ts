@@ -22,8 +22,11 @@ test("deepFreeze()", (t) => {
 
   f.b[0].a = 9999;
   t.is(f.b[0].a, 1);
-
-  delete f.b;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const bbb = f as any;
+  if ("b" in bbb) {
+    delete bbb.b;
+  }
   t.is(f.b[0].a, 1);
 
   // t.throws(() => {

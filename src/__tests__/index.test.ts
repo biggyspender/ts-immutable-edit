@@ -101,7 +101,8 @@ test("edit() array length decrease", (t) => {
 test("edit() delete prop", (t) => {
   const d = { a: 1, b: "hello" };
   const edited = edit(d, (draft) => {
-    delete draft.a;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (draft as any).a;
   });
   t.deepEqual(edited, { b: "hello" });
   t.deepEqual(d, { a: 1, b: "hello" });

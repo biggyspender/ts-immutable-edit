@@ -27,6 +27,7 @@ test("delete after expiration", (t) => {
   const editableDraft = draft_ as Mutable<typeof v>;
   materialize(draft_);
   t.throws(() => {
-    delete editableDraft.a;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (editableDraft as any).a;
   });
 });

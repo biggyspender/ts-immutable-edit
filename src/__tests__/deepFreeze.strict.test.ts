@@ -5,7 +5,12 @@ test("deepFreeze() - strict", (t) => {
   const bb = { b: 1 };
   const aaa = { a: 1 };
   const arr = [aaa, { a: 2 }];
-  const data = { a: bb, b: arr };
+  const data = {
+    a: bb,
+    b: arr as {
+      a: number;
+    }[],
+  };
   const frozen = deepFreeze(data);
   const f = frozen as typeof data;
   const temp = f.a;
@@ -32,7 +37,11 @@ test("deepFreeze() - strict", (t) => {
   t.is(f.b[0].a, 1);
 
   t.throws(() => {
-    delete f.b;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const bb = f as any;
+    if ("b" in bb) {
+      delete bb.b;
+    }
   });
   t.is(f.b[0].a, 1);
 });
